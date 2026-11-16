@@ -25,11 +25,12 @@ except NoSuchElementException:
 
 timer = time() + 5
 
-bigcookie = wait.until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, "#bigCookie"))
-        )
+
 while True:
     try:
+        bigcookie = wait.until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "#bigCookie"))
+        )
         bigcookie.click()
     except StaleElementReferenceException:
         continue
@@ -62,6 +63,21 @@ while True:
 
         except (NoSuchElementException, StaleElementReferenceException, ValueError):
             print("Couldn't find anything to buy")
+
+        product_data = []
+        for product in products:
+            try:
+                product_id = product.get_attribute("id")
+                product_class = product.get_attribute("class")
+                display_text = product.find_element(By.CSS_SELECTOR, ".content .title").text
+                product_enabled = "enabled" in product_class 
+                product_data.append((product_id, product_class, display_text, product_enabled))
+                
+            except (NoSuchElementException, StaleElementReferenceException):
+                continue
+        for product in product_data:
+            if product[3]:
+                print(f"Product: {product[0]}, Class: {product[1]}, Display Text: {product[2]}, Enabled: {product[3]}")
 
 
 
